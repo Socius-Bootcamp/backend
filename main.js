@@ -16,6 +16,7 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
 
+// TODO to test . Remove
 app.post('/user', async (req, res) => {
   try {
     console.log('req.body', req.body);
