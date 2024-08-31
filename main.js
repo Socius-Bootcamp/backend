@@ -16,6 +16,17 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
 
+app.post('/user', async (req, res) => {
+  try {
+    console.log('req.body', req.body);
+    const user = db.User.build(req.body);
+    await user.save();
+    res.status(201).send(user);
+  } catch (err) {
+    res.status(500).send({ error: 'Something went wrong:\n' + err.message });
+  }
+});
+
 const port = process.env.PORT || 3000;
 
 // Initialize Sequelize and sync models with the database
