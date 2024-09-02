@@ -24,7 +24,7 @@ const { User, Cart, Category, Order, Product, CartItem, OrderItem } =
   sequelize.models;
 
 // 1 User - 1 Cart
-User.belongsTo(Cart);
+User.hasOne(Cart);
 Cart.belongsTo(User);
 
 // 1 Cart - M CartItem
