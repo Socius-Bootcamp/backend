@@ -6,8 +6,8 @@ const sequelize = new Sequelize(dbConfig.DB, dbConfig.USER, dbConfig.PASSWORD, {
   dialect: dbConfig.dialect,
   pool: dbConfig.pool,
   define: {
-    timestamps: false
-  }
+    timestamps: false,
+  },
 });
 
 const db = {};
@@ -57,4 +57,4 @@ OrderItem.belongsTo(Order);
 Product.hasMany(OrderItem);
 OrderItem.belongsTo(Product);
 
-module.exports = db;
+module.exports = { ...sequelize.models, db };

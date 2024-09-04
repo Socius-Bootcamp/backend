@@ -3,7 +3,8 @@ dotenv.config();
 const express = require('express');
 const cors = require('cors');
 const bodyParse = require('body-parser');
-const db = require('./src/config');
+const { db } = require('./src/config');
+const { userRouter } = require('./src/routes/users');
 
 const app = express();
 
@@ -12,21 +13,10 @@ app.use(bodyParse.json());
 
 // Define the /health endpoint
 app.get('/health', (req, res) => {
-  console.log('hellooo');
   res.status(200).json({ status: 'ok' });
 });
 
-// TODO to test . Remove
-app.post('/user', async (req, res) => {
-  try {
-    console.log('req.body', req.body);
-    const user = db.User.build(req.body);
-    await user.save();
-    res.status(201).send(user);
-  } catch (err) {
-    res.status(500).send({ error: 'Something went wrong:\n' + err.message });
-  }
-});
+app.use('/api', userRouter);
 
 const port = process.env.PORT || 3000;
 
