@@ -5,6 +5,8 @@ const cors = require('cors');
 const bodyParse = require('body-parser');
 const { db } = require('./src/config');
 const { userRouter } = require('./src/routes/users');
+const { cartRouter } = require('./src/routes/carts');
+
 
 const app = express();
 
@@ -17,6 +19,8 @@ app.get('/health', (req, res) => {
 });
 
 app.use('/api', userRouter);
+app.use('/api', cartRouter);
+
 
 const port = process.env.PORT || 3000;
 
