@@ -3,7 +3,6 @@ const  { Cart, CartItem  }= require('../config');
 class CartService{
     async createCart (userId){
         //Create the cart adding the User id as FK
-        console.log('Id', userId);
         const cart =Cart.build({ 
             status: 'new',
             total: 0,
@@ -14,14 +13,6 @@ class CartService{
         return cart
     }
     
-    async findAllCarts(){
-        const carts = await Cart.findAll();
-        if (carts===null){
-            throw new Error('There are no existing Carts');
-        }else{
-            return carts;
-        }
-    }
     
     async findCartbyId(id){
         //find the Cart by his own Id
@@ -35,12 +26,11 @@ class CartService{
 
     async findCartbyUserId(userData) {
         //Find the Cart by the User Id that owns the cart. 
-        const cart = await Cart.findOne({where: { UserId: userData.UserId}});  
+        const cart = await Cart.findOne({where: { UserId: userData.UserId}, include: [CartItem] });
         if (cart===null){
             throw new Error('User cart not found');
         }else{
-            const data = await this.findCartbyId(cart.id);
-            return data;
+            return cart;
         }
     }
     
