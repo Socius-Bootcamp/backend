@@ -5,8 +5,6 @@ class UserService {
   async createUser(userData) {
     // Hash the password before saving
     const hashedPassword = await bcrypt.hash(userData.password, 10);
-    console.log('hashedPassword', hashedPassword);
-    console.log('hashedPassword.length', hashedPassword.length);
     const user = User.build({
       ...userData,
       admin: 0,
