@@ -19,11 +19,10 @@ class UserService {
   }
 
   async loginUser({ email, password }) {
-    const user = await User.findOne({ email });
+    const user = await User.findOne({ where: { email } });
     if (!user) {
       throw new Error('User not found');
     }
-
     // Check if password matches the hashed password in the database
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) {
