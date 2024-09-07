@@ -4,6 +4,12 @@ const { User } = require('../config');
 class UserService {
   async createUser(userData) {
     // Hash the password before saving
+    const emailAlreadyExist = await User.findOne({
+      where: { email: userData.email },
+    });
+    if (emailAlreadyExist) {
+      throw new Error('email is already in use');
+    }
     const hashedPassword = await bcrypt.hash(userData.password, 10);
     const user = User.build({
       ...userData,
