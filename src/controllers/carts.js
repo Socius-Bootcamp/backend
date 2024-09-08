@@ -7,7 +7,7 @@ const showCart = async (req, res) => {
     const cart = await cartService.findCartbyUserId(req.body);
     res.status(200).send(cart);
   } catch (err) {
-    res.status(500).send({ error: 'Something went wrong:\n' + err.message });
+    res.status(500).send({ error: 'Something went wrong: ' + err.message });
   }
 };
 
@@ -17,8 +17,28 @@ const addProductToCart = async (req, res) => {
       const cart = await cartService.addProductToCart(req.body);
       res.status(200).send(cart);
     } catch (err) {
-      res.status(500).send({ error: 'Something went wrong:\n' + err.message });
+      res.status(500).send({ error: 'Something went wrong: ' + err.message });
     }
 }
 
-module.exports = { showCart, addProductToCart };
+const clearCart = async (req, res) => {
+  try {
+    // TODO send the id from req.user and not take it from the body
+    const cart = await cartService.emptyCart(req.body.CartId);
+    res.status(200).send(cart);
+  } catch (err) {
+    res.status(500).send({ error: 'Something went wrong: ' + err.message });
+  }
+}
+
+const removeProduct = async (req, res) =>{
+  try {
+    // TODO send the id from req.user and not take it from the body
+    const cart = await cartService.removeProductFromCart(req.body);
+    res.status(200).send(cart);
+  } catch (err) {
+    res.status(500).send({ error: 'Something went wrong: ' + err.message });
+  }
+}
+
+module.exports = { showCart, addProductToCart, clearCart, removeProduct };
