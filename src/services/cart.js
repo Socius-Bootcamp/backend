@@ -3,8 +3,7 @@ const  { Cart, CartItem  }= require('../config');
 class CartService{
     async createCart (userId){
         //Create the cart adding the User id as FK
-        const cart =Cart.build({ 
-            status: 'new',
+        const cart =Cart.build({
             total: 0,
             date: new Date(),
             UserId: userId
@@ -39,7 +38,6 @@ class CartService{
         //update the Cart Data based on the values given
         await Cart.update(
             {
-                status: data.status,
                 total: data.total,
                 date: new Date()
             },
@@ -66,7 +64,7 @@ class CartService{
             }
         })
         if (!exists){
-            //item doesn't exists in the cart -> building item and saving it on DB, update to Cart total and status
+            //item doesn't exists in the cart -> building item and saving it on DB, update to Cart total
             const item= await CartItem.build({
                 qty: data.qty,
                 CartId: data.CartId,
@@ -74,7 +72,6 @@ class CartService{
             })
             await item.save();
             await Cart.increment({total: +(data.price*data.qty)},{where: {id: data.CartId} });
-            await Cart.update({status: "Buying"},{where: {id:data.CartId}});
 
         }else{
             //item already exists in the Cart -> update to Cart total and CartItem quantity info about the item
@@ -84,14 +81,45 @@ class CartService{
         }
         //update the date of modification on the cart
         await Cart.update({date: new Date()},{where: {id:data.CartId}});
-        const cart = await Cart.findAll({where:{id:data.CartId}})
-        if (cart===null){
-            throw new Error('Cart not found');
-        }else{
-            return cart;
-        }
+        //Use the function to get the cart and return it
+        return await this.findCartbyId(data.CartId);
 
-        
+    }
+
+    async removeProductFromCart(data){
+        //Find the item in the cart
+        const item= await CartItem.findOne({
+            where:{
+                CartId: data.CartId, 
+                ProductId: data.ProductId
+            }
+        })
+        if(!item){
+            throw new Error('Product already not in the cart');
+        }else{
+            //discount the total value of the cart and delete the item from the cart
+            await Cart.decrement({total: (data.price*item.qty)},{where: {id: data.CartId} });
+            await item.destroy(); 
+        }
+        //update the date of change in the cart and get it to return it
+        await Cart.update({date: new Date()},{where: {id:data.CartId}});
+        //Use the function to get the cart
+        return await this.findCartbyId(data.CartId);
+
+    }
+
+    async emptyCart(cartId){
+        //Destroy all CartItems that has the Cart to clear the cart.
+        await CartItem.destroy({
+            where: {CartId: cartId}
+        });
+        //Restore the Cart values to  default.
+        await Cart.update({
+            total: 0,
+            date: new Date()
+        },{where: {id:cartId}});
+        //Use the function to get the cart and return it
+        return await this.findCartbyId(cartId);
     }
 
     
