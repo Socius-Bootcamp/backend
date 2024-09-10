@@ -23,7 +23,8 @@ const addProductToCart = async (req, res) => {
 
 const clearCart = async (req, res) => {
   try {
-    // TODO send the id from req.user and not take it from the body
+    // TODO send the id from req.user and not take it from the body,
+    // check that the id of the owner of the cart is the same than the user that is sending the request 
     const cart = await cartService.emptyCart(req.body.CartId);
     res.status(200).send(cart);
   } catch (err) {
@@ -33,7 +34,8 @@ const clearCart = async (req, res) => {
 
 const removeProduct = async (req, res) =>{
   try {
-    // TODO send the id from req.user and not take it from the body
+    // TODO send the id from req.user and not take it from the body,
+    // check that the id of the owner of the cart is the same than the user that is sending the request 
     const cart = await cartService.removeProductFromCart(req.body);
     res.status(200).send(cart);
   } catch (err) {
