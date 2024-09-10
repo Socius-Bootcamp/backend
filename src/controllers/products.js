@@ -38,9 +38,19 @@ const createProduct = async (req, res) => {
   }
 };
 
+const deleteProduct = async (req, res) => {
+  try {
+    const product = await productService.delete(req.params.id);
+    res.status(200).send(product);
+  } catch (err) {
+    res.status(500).send({ error: 'Something went wrong:\n' + err.message });
+  }
+};
+
 module.exports = {
   showProducts,
   showProductById,
   updateProduct,
   createProduct,
+  deleteProduct,
 };

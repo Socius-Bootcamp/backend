@@ -24,6 +24,13 @@ class ProductService {
     const productUpdated = await this.findById(id);
     return productUpdated;
   }
+
+  async delete(id) {
+    const product = await Product.findByPk(id);
+    if (!product) throw new Error('product not found');
+    await product.destroy();
+    return product;
+  }
 }
 
 module.exports = new ProductService();
