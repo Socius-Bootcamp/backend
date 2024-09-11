@@ -4,9 +4,7 @@ const express = require('express');
 const cors = require('cors');
 const bodyParse = require('body-parser');
 const { db } = require('./src/config');
-const { userRouter } = require('./src/routes/users');
-const { cartRouter } = require('./src/routes/carts');
-
+const { apiRouter } = require('./src/routes');
 
 const app = express();
 
@@ -18,9 +16,7 @@ app.get('/health', (req, res) => {
   res.status(200).json({ status: 'ok' });
 });
 
-app.use('/api', userRouter);
-app.use('/api', cartRouter);
-
+app.use('/api', apiRouter);
 
 const port = process.env.PORT || 3000;
 
