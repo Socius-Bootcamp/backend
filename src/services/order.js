@@ -56,9 +56,7 @@ class OrderService{
         //the update will update only the values given in the data, so if we don't give a country it won't overwrite it with a null 
         await Order.update(
             {
-                total: data.total,
                 status: data.status,
-                UserId: data.UserId,
                 address1:data.address1,
                 address2:data.address2,
                 province:data.province,
