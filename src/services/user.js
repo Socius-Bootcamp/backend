@@ -37,12 +37,22 @@ class UserService {
     }
 
     return {
+      id: user.id,
       email: user.email,
       firstName: user.firstName,
       lastName: user.lastName,
       phone: user.phone,
       admin: !!user.admin,
     };
+  }
+
+  async findById(id) {
+    const user = await User.findByPk(id);
+    if (!user) {
+      throw new Error('user not found');
+    }
+    delete user.password;
+    return user;
   }
 }
 
