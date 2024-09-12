@@ -23,9 +23,9 @@ class CartService{
         }
     }
 
-    async findCartbyUserId(userData) {
+    async findCartbyUserId(userId) {
         //Find the Cart by the User Id that owns the cart. 
-        const cart = await Cart.findOne({where: { UserId: userData.UserId}, include: [CartItem] });
+        const cart = await Cart.findOne({where: { UserId: userId}, include: [CartItem] });
         if (cart===null){
             throw new Error('User cart not found');
         }else{
