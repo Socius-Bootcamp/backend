@@ -7,7 +7,7 @@ module.exports = (sequelize) =>
       //Confirmed: the order has been created, Processing: the shop is preparing the order to ship it
       //Shipped: the order has been sent to the given address, Delivered: the order has reached the destination and recepted by a person.
       //Canceled: the order has been canceled
-      values: ['confirmed', 'processing' , 'shipped', 'delivered' ,'canceled'],
+      values: ['confirmed', 'processing', 'shipped', 'delivered', 'canceled'],
       allowNull: false,
     },
     total: {
