@@ -100,6 +100,7 @@ class CartService {
         ProductId: data.ProductId,
       },
     });
+    console.log('item', item);
     if (!item) {
       throw new Error('Product already not in the cart');
     } else {

@@ -11,7 +11,10 @@ const showCart = async (req, res) => {
 
 const addProductToCart = async (req, res) => {
   try {
-    const { id: cartId } = await cartService.findCartbyId(req.currentUser.id);
+    const { id: cartId } = await cartService.findCartbyUserId(
+      req.currentUser.id
+    );
+    console.log('cartId', cartId);
 
     const updatedCart = await cartService.addProductToCart({
       ...req.body,
@@ -36,7 +39,9 @@ const clearCart = async (req, res) => {
 
 const removeProduct = async (req, res) => {
   try {
-    const { id: cartId } = await cartService.findCartbyId(req.currentUser.id);
+    const { id: cartId } = await cartService.findCartbyUserId(
+      req.currentUser.id
+    );
 
     const updatedCart = await cartService.removeProductFromCart({
       ...req.body,
