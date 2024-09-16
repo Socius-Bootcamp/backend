@@ -1,4 +1,4 @@
-const { Cart, CartItem } = require('../config');
+const { Cart, CartItem, Product } = require('../config');
 
 class CartService {
   async createCart(userId) {
@@ -62,6 +62,8 @@ class CartService {
         ProductId: data.ProductId,
       },
     });
+    // Get the product price
+    const { price: productPrice } = await Product.findByPk(data.ProductId);
     if (!exists) {
       //item doesn't exists in the cart -> building item and saving it on DB, update to Cart total
       const item = await CartItem.build({
@@ -71,14 +73,14 @@ class CartService {
       });
       await item.save();
       await Cart.increment(
-        { total: +(data.price * data.qty) },
+        { total: +(productPrice * data.qty) },
         { where: { id: data.CartId } }
       );
     } else {
       //item already exists in the Cart -> update to Cart total and CartItem quantity info about the item
       const difference = data.qty - exists.qty;
       await Cart.increment(
-        { total: +(data.price * difference) },
+        { total: +(productPrice * difference) },
         { where: { id: data.CartId } }
       );
       await CartItem.increment(
@@ -101,12 +103,14 @@ class CartService {
       },
     });
     console.log('item', item);
+    // Get the product price
+    const { price: productPrice } = await Product.findByPk(data.ProductId);
     if (!item) {
       throw new Error('Product already not in the cart');
     } else {
       //discount the total value of the cart and delete the item from the cart
       await Cart.decrement(
-        { total: data.price * item.qty },
+        { total: productPrice * item.qty },
         { where: { id: data.CartId } }
       );
       await item.destroy();

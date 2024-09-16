@@ -46,7 +46,7 @@ const removeProduct = async (req, res) => {
     const updatedCart = await cartService.removeProductFromCart({
       ...req.body,
       CartId: cartId,
-      userId: req.currentUser.id,
+      userId: req.currentUser.id, //Not needed, delete if confirmed
     });
     res.status(200).send(updatedCart);
   } catch (err) {

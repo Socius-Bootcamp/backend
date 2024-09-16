@@ -2,7 +2,10 @@ const orderService = require('../services/order');
 
 const registerOrder = async (req, res) => {
   try {
-    const order = await orderService.createOrder(req.body);
+    const order = await orderService.createOrder({
+      ...req.body,
+      UserId: req.currentUser.id,
+    });
     res.status(200).send(order);
   } catch (err) {
     res.status(500).send({ error: 'Something went wrong: ' + err.message });

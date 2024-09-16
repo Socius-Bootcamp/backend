@@ -28,9 +28,8 @@ class OrderService {
       //Use the CartItems to create each OrderItems
       const Items = cart.CartItems;
       await Items.forEach(async (Item) => {
-        //get the actual value of the product to save it
+        //get the product for the value and stock
         const product = await Product.findByPk(Item.ProductId);
-        console.log(product.price);
 
         //create the OrderItem
         const orderItemData = await OrderItem.build({
@@ -41,6 +40,9 @@ class OrderService {
         });
         //save the OrderItem
         await orderItemData.save();
+
+        //We decrease the product stock by the quantity sold
+        await product.decrement({ stock: Item.qty });
       });
 
       //Once done with all the OrderItems we empty the cart and return the order
