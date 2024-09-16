@@ -3,6 +3,8 @@ dotenv.config();
 const express = require('express');
 const cors = require('cors');
 const bodyParse = require('body-parser');
+const cookieSession = require('cookie-session');
+
 const { db } = require('./src/config');
 const { apiRouter } = require('./src/routes');
 
@@ -10,6 +12,13 @@ const app = express();
 
 app.use(cors());
 app.use(bodyParse.json());
+
+app.use(
+  cookieSession({
+    signed: false,
+    secure: process.env.NODE_ENV !== 'test',
+  })
+);
 
 // Define the /health endpoint
 app.get('/health', (req, res) => {
