@@ -9,6 +9,16 @@ const showProducts = async (req, res) => {
   }
 };
 
+const showCategories = async (req, res) => {
+  try {
+    const categories = await productService.findCategories();
+    res.status(200).send(categories);
+  } catch (err) {
+    res.status(500).send({ error: 'Something went wrong:\n' + err.message });
+  }
+};
+
+
 const showProductById = async (req, res) => {
   try {
     const product = await productService.findById(req.params.id);
@@ -49,6 +59,7 @@ const deleteProduct = async (req, res) => {
 
 module.exports = {
   showProducts,
+  showCategories,
   showProductById,
   updateProduct,
   createProduct,
