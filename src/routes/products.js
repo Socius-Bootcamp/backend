@@ -7,6 +7,6 @@ router.get('/products/:id', showProductById);
 
 router.get('/products', showProducts);
 
-router.get('/products/categories', showCategories);
+router.get('/categories', showCategories);
 
 module.exports = { productRouter: router };
