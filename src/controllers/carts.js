@@ -28,9 +28,9 @@ const addProductToCart = async (req, res) => {
 
 const clearCart = async (req, res) => {
   try {
-    const { id: cartId } = await cartService.findCartbyId(req.currentUser.id);
+    const { id: cartId } = await cartService.findCartbyUserId(req.currentUser.id);
 
-    await cartService.emptyCart(cartId);
+    const cart = await cartService.emptyCart(cartId);
     res.status(200).send(cart);
   } catch (err) {
     res.status(500).send({ error: 'Something went wrong: ' + err.message });
