@@ -15,14 +15,15 @@ class CartService {
   async updateItemPrices(cart){
     //Use the CartItems to create each OrderItems
     const Items = cart.CartItems;
-    cart.total=0;
+    let total=0;
     Items.forEach(async (Item) => {
       //get the product for the value
       const product = Product.findByPk(Item.ProductId);
       //update the CartItem
       Item.update({price: product.price});
-      cart.total +=(Item.price*Item.qty);
+      total +=(Item.price*Item.qty);
     });
+    cart.update({total: total});
   }
 
   async findCartbyId(id) {
