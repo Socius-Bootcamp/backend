@@ -1,4 +1,4 @@
-const { Product } = require('../config');
+const { Product, Category } = require('../config');
 
 class ProductService {
   async create(productData) {
@@ -9,6 +9,10 @@ class ProductService {
 
   find() {
     return Product.findAll();
+  }
+
+  findCategories() {
+    return Category.findAll();
   }
 
   async findById(productId) {

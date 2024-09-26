@@ -1,4 +1,4 @@
-const { Cart, CartItem } = require('../config');
+const { Cart, CartItem, Product } = require('../config');
 
 class CartService {
   async createCart(userId) {
@@ -12,12 +12,27 @@ class CartService {
     return cart;
   }
 
+  async updateItemPrices(cart){
+    //Use the CartItems to create each OrderItems
+    const Items = cart.CartItems;
+    let total=0;
+    Items.forEach(async (Item) => {
+      //get the product for the value
+      const product = Product.findByPk(Item.ProductId);
+      //update the CartItem
+      Item.update({price: product.price});
+      total +=(Item.price*Item.qty);
+    });
+    cart.update({total: total});
+  }
+
   async findCartbyId(id) {
     //find the Cart by his own Id
     const cart = await Cart.findByPk(id, { include: [CartItem] });
     if (cart === null) {
       throw new Error('Cart not found');
     } else {
+      await this.updateItemPrices(cart);
       return cart;
     }
   }
@@ -31,6 +46,7 @@ class CartService {
     if (cart === null) {
       throw new Error('User cart not found');
     } else {
+      await this.updateItemPrices(cart);
       return cart;
     }
   }
@@ -62,25 +78,20 @@ class CartService {
         ProductId: data.ProductId,
       },
     });
+    // Get the product price
+    const { price: productPrice } = await Product.findByPk(data.ProductId);
     if (!exists) {
       //item doesn't exists in the cart -> building item and saving it on DB, update to Cart total
       const item = await CartItem.build({
         qty: data.qty,
+        price: productPrice,
         CartId: data.CartId,
         ProductId: data.ProductId,
       });
       await item.save();
-      await Cart.increment(
-        { total: +(data.price * data.qty) },
-        { where: { id: data.CartId } }
-      );
     } else {
-      //item already exists in the Cart -> update to Cart total and CartItem quantity info about the item
+      //item already exists in the Cart -> update the CartItem quantity info about the item
       const difference = data.qty - exists.qty;
-      await Cart.increment(
-        { total: +(data.price * difference) },
-        { where: { id: data.CartId } }
-      );
       await CartItem.increment(
         { qty: +difference },
         { where: { id: exists.id } }
@@ -88,7 +99,7 @@ class CartService {
     }
     //update the date of modification on the cart
     await Cart.update({ date: new Date() }, { where: { id: data.CartId } });
-    //Use the function to get the cart and return it
+    //Use the function to get the cart, update his total value and return it
     return await this.findCartbyId(data.CartId);
   }
 
@@ -100,20 +111,16 @@ class CartService {
         ProductId: data.ProductId,
       },
     });
-    console.log('item', item);
     if (!item) {
+      //if its not in the cart
       throw new Error('Product already not in the cart');
     } else {
-      //discount the total value of the cart and delete the item from the cart
-      await Cart.decrement(
-        { total: data.price * item.qty },
-        { where: { id: data.CartId } }
-      );
+      //delete the item from the cart
       await item.destroy();
     }
-    //update the date of change in the cart and get it to return it
+    //update the date of change in the cart
     await Cart.update({ date: new Date() }, { where: { id: data.CartId } });
-    //Use the function to get the cart
+    //Use the function to get the cart and also update the total
     return await this.findCartbyId(data.CartId);
   }
 
