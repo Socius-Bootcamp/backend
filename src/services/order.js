@@ -91,6 +91,12 @@ class OrderService {
     const orders = await Order.findAll({ include: [OrderItem] });
     return orders;
   }
+
+  async getAllOrdersWithProduct(id) {
+    //we get all the existing orderItem that has the item
+    const orders = await OrderItem.findAll({ where: {ProductId: id} });
+    return orders;
+  }
 }
 
 module.exports = new OrderService();

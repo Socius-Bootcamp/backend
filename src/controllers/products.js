@@ -1,4 +1,6 @@
 const productService = require('../services/product');
+const orderService = require('../services/order');
+const cartService = require('../services/cart');
 
 const showProducts = async (req, res) => {
   try {
@@ -17,7 +19,6 @@ const showCategories = async (req, res) => {
     res.status(500).send({ error: 'Something went wrong:\n' + err.message });
   }
 };
-
 
 const showProductById = async (req, res) => {
   try {
@@ -50,8 +51,17 @@ const createProduct = async (req, res) => {
 
 const deleteProduct = async (req, res) => {
   try {
-    const product = await productService.delete(req.params.id);
-    res.status(200).send(product);
+    cartService.removeItemfromAllCarts(req.params.id);
+    let deleted = true;
+    let product;
+    const inOrders = await orderService.getAllOrdersWithProduct(req.params.id);
+    if (inOrders.length > 0) {
+      deleted = false;
+      product = await productService.update(req.params.id, { stock: 0 });
+    } else {
+      product = await productService.delete(req.params.id);
+    }
+    res.status(200).send({ product, deleted });
   } catch (err) {
     res.status(500).send({ error: 'Something went wrong:\n' + err.message });
   }

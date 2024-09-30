@@ -13,7 +13,7 @@ class CartService {
   }
 
   async updateItemPrices(cart){
-    //Use the CartItems to create each OrderItems
+    //Use the CartItems to get the values
     const Items = cart.CartItems;
     let total=0;
     Items.forEach(async (Item) => {
@@ -32,6 +32,7 @@ class CartService {
     if (cart === null) {
       throw new Error('Cart not found');
     } else {
+      //we update the values of the cart in case there has been changes in the products price
       await this.updateItemPrices(cart);
       return cart;
     }
@@ -46,6 +47,7 @@ class CartService {
     if (cart === null) {
       throw new Error('User cart not found');
     } else {
+      //we update the values of the cart in case there has been changes in the products price
       await this.updateItemPrices(cart);
       return cart;
     }
@@ -139,6 +141,12 @@ class CartService {
     );
     //Use the function to get the cart and return it
     return await this.findCartbyId(cartId);
+  }
+
+  async removeItemfromAllCarts(id) {
+    //Destroy all CartItems that has the item in cart.
+    await CartItem.destroy({ where: { ProductId: id },
+    });
   }
 }
 
