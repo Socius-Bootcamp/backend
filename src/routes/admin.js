@@ -9,7 +9,7 @@ const { getOrders } = require('../controllers/orders');
 
 const router = Router();
 
-router.use(isAdmin);
+router.use('/admin', isAdmin);
 
 router.post('/admin/products', createProduct);
 router.put('/admin/products/:id', updateProduct);
