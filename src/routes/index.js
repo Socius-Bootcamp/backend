@@ -13,7 +13,7 @@ apiRouter.use(userRouter);
 apiRouter.use(currentUser);
 apiRouter.use(cartRouter);
 apiRouter.use(productRouter);
-apiRouter.use(adminRouter);
 apiRouter.use(orderRouter);
+apiRouter.use(adminRouter);
 
 module.exports = { apiRouter };

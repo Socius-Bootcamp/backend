@@ -10,7 +10,12 @@ const { apiRouter } = require('./src/routes');
 
 const app = express();
 
-app.use(cors());
+app.use(
+  cors({
+    origin: 'http://localhost:3001', // Allow only this origin
+    credentials: true, // Allow credentials (cookies, authorization headers, etc.)
+  })
+);
 app.use(bodyParse.json());
 
 app.use(
