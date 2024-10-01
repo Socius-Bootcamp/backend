@@ -79,4 +79,27 @@ describe('Sequelize Test Setup', () => {
     const user = await User.findOne({ email });
     expect(password).not.toBe(user.password);
   });
+
+  test('should throw an error if user is already register', async () => {
+    await request(app)
+      .post('/api/auth/register')
+      .send({
+        firstName: 'testingName',
+        lastName: 'testingLastName',
+        phone: '123123',
+        email,
+        password,
+      })
+      .expect(201);
+    await request(app)
+      .post('/api/auth/register')
+      .send({
+        firstName: 'testingName',
+        lastName: 'testingLastName',
+        phone: '123123',
+        email,
+        password,
+      })
+      .expect(500);
+  });
 });
